@@ -106,7 +106,7 @@ Content-Type: application/json
 
 1. **Clone o repositório:**
 ```bash
-git clone <url-do-repositorio>
+git clone https://github.com/01Rian/ToDo-List-App
 cd Todo-Test
 ```
 
@@ -185,7 +185,31 @@ A aplicação carrega automaticamente 5 tarefas de exemplo ao iniciar:
 4. **Implementar Testes Unitários** (NAO_INICIADO)
 5. **Configurar Deploy** (NAO_INICIADO)
 
-## 📚 Tecnologias Utilizadas
+## 📖 Documentação da API (Swagger/OpenAPI)
+
+A API possui documentação interativa gerada automaticamente com Swagger/OpenAPI 3.
+
+### 🌐 Acesso à Documentação
+
+- **Swagger UI**: `http://localhost:8080/swagger-ui.html` (Interface web interativa)
+- **OpenAPI JSON**: `http://localhost:8080/api-docs` (Especificação em JSON)
+- **OpenAPI YAML**: `http://localhost:8080/api-docs.yaml` (Especificação em YAML)
+
+### ✨ Recursos da Documentação
+
+- 📋 **Endpoints Documentados**: Todos os endpoints com descrições detalhadas
+- 🧪 **Teste Interativo**: Execute requisições diretamente no navegador
+- 📊 **Modelos de Dados**: Visualize estruturas de DTOs e entidades
+- 🔍 **Filtros e Ordenação**: Interface organizada por tags e métodos
+- ⚡ **Sempre Atualizada**: Sincronizada automaticamente com o código
+
+### 🚀 Como Usar
+
+1. Execute a aplicação (`./mvnw spring-boot:run`)
+2. Acesse `http://localhost:8080/swagger-ui.html`
+3. Explore os endpoints e use o botão "Try it out" para testar
+
+## � Tecnologias Utilizadas
 
 - **Java 17**
 - **Spring Boot 3.5.0**
@@ -193,6 +217,7 @@ A aplicação carrega automaticamente 5 tarefas de exemplo ao iniciar:
 - **H2 Database**
 - **Lombok**
 - **Maven**
+- **SpringDoc OpenAPI 3** (Swagger)
 
 ## 🎯 Status da Aplicação
 
@@ -204,6 +229,7 @@ A aplicação carrega automaticamente 5 tarefas de exemplo ao iniciar:
 - [x] Tratamento de exceções
 - [x] Dados de exemplo
 - [x] Documentação completa
+- [x] **Swagger/OpenAPI** - Documentação interativa da API
 
 ---
 

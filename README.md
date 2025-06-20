@@ -12,7 +12,7 @@ Aplicação completa de gerenciamento de tarefas com backend em Spring Boot, fro
 
 1. **Clone o repositório:**
 ```bash
-git clone <url-do-repositorio>
+git clone https://github.com/01Rian/ToDo-List-App
 cd Todo-Test
 ```
 
