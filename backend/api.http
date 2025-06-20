@@ -1,0 +1,229 @@
+### Testes da API de Tasks
+### Servidor: http://localhost:8080
+
+### 1. Listar todas as tasks
+GET http://localhost:8080/api/tasks
+Content-Type: application/json
+
+###
+
+### 2. Listar tasks filtradas por status
+GET http://localhost:8080/api/tasks?status=NAO_INICIADO
+Content-Type: application/json
+
+###
+
+### 3. Listar tasks filtradas por palavra-chave
+GET http://localhost:8080/api/tasks?keyword=teste
+Content-Type: application/json
+
+###
+
+### 4. Listar tasks filtradas por status e palavra-chave
+GET http://localhost:8080/api/tasks?status=EM_ANDAMENTO&keyword=importante
+Content-Type: application/json
+
+###
+
+### 5. Listar todos os status disponíveis
+GET http://localhost:8080/api/tasks/status
+Content-Type: application/json
+
+###
+
+### 6. Criar uma nova task
+POST http://localhost:8080/api/tasks
+Content-Type: application/json
+
+{
+  "titulo": "Implementar testes da API",
+  "descricao": "Criar testes HTTP para todas as rotas da API de tasks",
+  "status": "NAO_INICIADO"
+}
+
+###
+
+### 7. Criar task sem descrição
+POST http://localhost:8080/api/tasks
+Content-Type: application/json
+
+{
+  "titulo": "Task sem descrição",
+  "status": "NAO_INICIADO"
+}
+
+###
+
+### 8. Criar task com status EM_ANDAMENTO
+POST http://localhost:8080/api/tasks
+Content-Type: application/json
+
+{
+  "titulo": "Task em andamento",
+  "descricao": "Esta task já está em andamento",
+  "status": "EM_ANDAMENTO"
+}
+
+###
+
+### 9. Criar task CONCLUÍDA
+POST http://localhost:8080/api/tasks
+Content-Type: application/json
+
+{
+  "titulo": "Task concluída",
+  "descricao": "Esta task já foi finalizada",
+  "status": "CONCLUIDO"
+}
+
+###
+
+### 10. Buscar task por ID (substitua {id} por um ID válido)
+GET http://localhost:8080/api/tasks/1
+Content-Type: application/json
+
+###
+
+### 11. Buscar task por ID inexistente
+GET http://localhost:8080/api/tasks/999
+Content-Type: application/json
+
+###
+
+### 12. Atualizar task completa (substitua {id} por um ID válido)
+PUT http://localhost:8080/api/tasks/1
+Content-Type: application/json
+
+{
+  "titulo": "Task atualizada completamente",
+  "descricao": "Descrição atualizada da task",
+  "status": "EM_ANDAMENTO"
+}
+
+###
+
+### 13. Atualizar apenas o status da task (substitua {id} por um ID válido)
+PATCH http://localhost:8080/api/tasks/1/status
+Content-Type: application/json
+
+"CONCLUIDO"
+
+###
+
+### 14. Atualizar status para EM_ANDAMENTO
+PATCH http://localhost:8080/api/tasks/1/status
+Content-Type: application/json
+
+"EM_ANDAMENTO"
+
+###
+
+### 15. Deletar task (substitua {id} por um ID válido)
+DELETE http://localhost:8080/api/tasks/1
+Content-Type: application/json
+
+###
+
+### 16. Deletar task inexistente
+DELETE http://localhost:8080/api/tasks/999
+Content-Type: application/json
+
+###
+
+### === TESTES DE VALIDAÇÃO E ERROS ===
+
+### 17. Criar task sem título (deve falhar)
+POST http://localhost:8080/api/tasks
+Content-Type: application/json
+
+{
+  "descricao": "Task sem título",
+  "status": "NAO_INICIADO"
+}
+
+###
+
+### 18. Criar task sem status (deve falhar)
+POST http://localhost:8080/api/tasks
+Content-Type: application/json
+
+{
+  "titulo": "Task sem status",
+  "descricao": "Esta task não tem status"
+}
+
+###
+
+### 19. Criar task com título vazio (deve falhar)
+POST http://localhost:8080/api/tasks
+Content-Type: application/json
+
+{
+  "titulo": "",
+  "descricao": "Task com título vazio",
+  "status": "NAO_INICIADO"
+}
+
+###
+
+### 20. Criar task com status inválido (deve falhar)
+POST http://localhost:8080/api/tasks
+Content-Type: application/json
+
+{
+  "titulo": "Task com status inválido",
+  "descricao": "Esta task tem um status que não existe",
+  "status": "STATUS_INEXISTENTE"
+}
+
+###
+
+### 21. Atualizar task inexistente (deve retornar 404)
+PUT http://localhost:8080/api/tasks/999
+Content-Type: application/json
+
+{
+  "titulo": "Task inexistente",
+  "descricao": "Tentando atualizar task que não existe",
+  "status": "NAO_INICIADO"
+}
+
+###
+
+### 22. Atualizar status de task inexistente (deve retornar 404)
+PATCH http://localhost:8080/api/tasks/999/status
+Content-Type: application/json
+
+"CONCLUIDO"
+
+###
+
+### === TESTES DE FILTROS AVANÇADOS ===
+
+### 23. Buscar por palavra-chave que não existe
+GET http://localhost:8080/api/tasks?keyword=palavrachavequenoexiste
+Content-Type: application/json
+
+###
+
+### 24. Filtrar por status com palavra-chave vazia
+GET http://localhost:8080/api/tasks?status=CONCLUIDO&keyword=
+Content-Type: application/json
+
+###
+
+### 25. Filtrar por todos os status
+GET http://localhost:8080/api/tasks?status=NAO_INICIADO
+Content-Type: application/json
+
+###
+
+GET http://localhost:8080/api/tasks?status=EM_ANDAMENTO
+Content-Type: application/json
+
+###
+
+GET http://localhost:8080/api/tasks?status=CONCLUIDO
+Content-Type: application/json
+
+###
