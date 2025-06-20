@@ -1,0 +1,47 @@
+spring:
+  # Configurações do PostgreSQL para Docker
+  datasource:
+    url: jdbc:postgresql://postgres:5432/todolist
+    driver-class-name: org.postgresql.Driver
+    username: todouser
+    password: todopass
+  
+  # Configurações do JPA/Hibernate para PostgreSQL
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          lob:
+            non_contextual_creation: true
+  
+  # Configuração de formatação JSON
+  jackson:
+    date-format: dd-MM-yyyy HH:mm:ss
+    time-zone: America/Sao_Paulo
+
+# Configurações do servidor
+server:
+  port: 8080
+
+# Configurações do Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when-authorized
+
+# Configurações de logging
+logging:
+  level:
+    com.backend: INFO
+    org.springframework.web: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
