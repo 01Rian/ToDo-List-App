@@ -9,6 +9,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
@@ -18,13 +26,23 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/tasks")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*") // Permitir CORS para frontend
+@Tag(name = "Tasks", description = "API para gerenciamento de tarefas")
 public class TaskController {
     
     private final TaskService taskService;
     
     @GetMapping
+    @Operation(summary = "Listar todas as tarefas",
+               description = "Retorna uma lista de tarefas com opções de filtro por status e palavra-chave")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Lista de tarefas retornada com sucesso",
+                     content = @Content(mediaType = "application/json",
+                                      schema = @Schema(implementation = TaskResponseDTO.class)))
+    })
     public ResponseEntity<List<TaskResponseDTO>> listarTasks(
+            @Parameter(description = "Filtrar por status da tarefa")
             @RequestParam(required = false) Task.StatusTask status,
+            @Parameter(description = "Filtrar por palavra-chave no título ou descrição")
             @RequestParam(required = false) String keyword) {
         
         List<Task> tasks;
@@ -47,14 +65,34 @@ public class TaskController {
     }
     
     @GetMapping("/{id}")
-    public ResponseEntity<TaskResponseDTO> buscarTaskPorId(@PathVariable Long id) {
+    @Operation(summary = "Buscar tarefa por ID",
+               description = "Retorna uma tarefa específica pelo seu ID")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Tarefa encontrada",
+                     content = @Content(mediaType = "application/json",
+                                      schema = @Schema(implementation = TaskResponseDTO.class))),
+        @ApiResponse(responseCode = "404", description = "Tarefa não encontrada")
+    })
+    public ResponseEntity<TaskResponseDTO> buscarTaskPorId(
+            @Parameter(description = "ID da tarefa", required = true)
+            @PathVariable Long id) {
         Optional<Task> task = taskService.buscarPorId(id);
         return task.map(t -> ResponseEntity.ok(TaskResponseDTO.fromTask(t)))
                   .orElse(ResponseEntity.notFound().build());
     }
     
     @PostMapping
-    public ResponseEntity<TaskResponseDTO> criarTask(@Valid @RequestBody TaskDTO taskDTO) {
+    @Operation(summary = "Criar nova tarefa",
+               description = "Cria uma nova tarefa no sistema")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Tarefa criada com sucesso",
+                     content = @Content(mediaType = "application/json",
+                                      schema = @Schema(implementation = TaskResponseDTO.class))),
+        @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos")
+    })
+    public ResponseEntity<TaskResponseDTO> criarTask(
+            @Parameter(description = "Dados da tarefa a ser criada", required = true)
+            @Valid @RequestBody TaskDTO taskDTO) {
         try {
             Task taskCriada = taskService.criarTask(taskDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(TaskResponseDTO.fromTask(taskCriada));
@@ -64,8 +102,20 @@ public class TaskController {
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<TaskResponseDTO> atualizarTask(@PathVariable Long id,
-                                            @Valid @RequestBody TaskDTO taskDTO) {
+    @Operation(summary = "Atualizar tarefa",
+               description = "Atualiza uma tarefa existente pelo seu ID")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Tarefa atualizada com sucesso",
+                     content = @Content(mediaType = "application/json",
+                                      schema = @Schema(implementation = TaskResponseDTO.class))),
+        @ApiResponse(responseCode = "404", description = "Tarefa não encontrada"),
+        @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos")
+    })
+    public ResponseEntity<TaskResponseDTO> atualizarTask(
+            @Parameter(description = "ID da tarefa", required = true)
+            @PathVariable Long id,
+            @Parameter(description = "Dados atualizados da tarefa", required = true)
+            @Valid @RequestBody TaskDTO taskDTO) {
         try {
             Task taskAtualizada = taskService.atualizarTask(id, taskDTO);
             return ResponseEntity.ok(TaskResponseDTO.fromTask(taskAtualizada));
@@ -77,7 +127,15 @@ public class TaskController {
     }
     
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletarTask(@PathVariable Long id) {
+    @Operation(summary = "Deletar tarefa",
+               description = "Remove uma tarefa do sistema pelo seu ID")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Tarefa deletada com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Tarefa não encontrada")
+    })
+    public ResponseEntity<Void> deletarTask(
+            @Parameter(description = "ID da tarefa", required = true)
+            @PathVariable Long id) {
         try {
             taskService.deletarTask(id);
             return ResponseEntity.noContent().build();
@@ -87,13 +145,29 @@ public class TaskController {
     }
     
     @GetMapping("/status")
+    @Operation(summary = "Listar status disponíveis",
+               description = "Retorna todos os status possíveis para uma tarefa")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Lista de status retornada com sucesso")
+    })
     public ResponseEntity<Task.StatusTask[]> listarStatus() {
         return ResponseEntity.ok(Task.StatusTask.values());
     }
     
     @PatchMapping("/{id}/status")
-    public ResponseEntity<TaskResponseDTO> atualizarStatus(@PathVariable Long id,
-                                              @RequestBody Task.StatusTask status) {
+    @Operation(summary = "Atualizar status da tarefa",
+               description = "Atualiza apenas o status de uma tarefa específica")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Status da tarefa atualizado com sucesso",
+                     content = @Content(mediaType = "application/json",
+                                      schema = @Schema(implementation = TaskResponseDTO.class))),
+        @ApiResponse(responseCode = "404", description = "Tarefa não encontrada")
+    })
+    public ResponseEntity<TaskResponseDTO> atualizarStatus(
+            @Parameter(description = "ID da tarefa", required = true)
+            @PathVariable Long id,
+            @Parameter(description = "Novo status da tarefa", required = true)
+            @RequestBody Task.StatusTask status) {
         try {
             TaskDTO taskDTO = new TaskDTO();
             taskDTO.setStatus(status);

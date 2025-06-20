@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDateTime;
 
@@ -35,9 +36,15 @@ public class Task {
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime dataCriacao;
     
+    @Schema(description = "Status possíveis para uma tarefa")
     public enum StatusTask {
+        @Schema(description = "Tarefa não foi iniciada")
         NAO_INICIADO("Não Iniciado"),
+        
+        @Schema(description = "Tarefa está em progresso")
         EM_ANDAMENTO("Em Andamento"),
+        
+        @Schema(description = "Tarefa foi concluída")
         CONCLUIDO("Concluído");
         
         private final String descricao;
